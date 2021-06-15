@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Store extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'whatsapp_number',
+        'last_active',
+        'description',
+        'rating',
+        'region'
+    ];
 }

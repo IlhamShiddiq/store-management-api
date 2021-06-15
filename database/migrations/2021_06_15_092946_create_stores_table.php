@@ -15,6 +15,12 @@ class CreateStoresTable extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->timestamp('last_active')->nullable();
+            $table->string('whatsapp_number');
+            $table->text('description')->nullable();
+            $table->decimal('rating')->default(0.0);
+            $table->string('region');
             $table->timestamps();
         });
     }
