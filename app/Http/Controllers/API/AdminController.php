@@ -16,6 +16,12 @@ class AdminController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->can('admin crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $users = User::all();
 
         return response()->json($users, 200);
@@ -39,6 +45,12 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user()->can('admin crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'email|required|unique:users',
@@ -49,12 +61,14 @@ class AdminController extends Controller
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
-        $data = User::create($validated);
+        $user = User::create($validated);
+
+        $user->assignRole('admin');
 
         $message = [
             'message' => 'Data has created successfully',
             'data' => [
-                'id' => $data->id,
+                'id' => $user->id,
                 'name' => $request->name,
                 'email' => $request->email
             ]
@@ -71,6 +85,12 @@ class AdminController extends Controller
      */
     public function show($id)
     {
+        if(!auth()->user()->can('admin crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $user = User::find($id);
 
         return response()->json($user, 200);
@@ -96,6 +116,12 @@ class AdminController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!auth()->user()->can('admin crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $validated = $request->validate([
             'email' => 'email|unique:users',
             'gender' => [Rule::in(['L', 'P'])],
@@ -121,6 +147,12 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
+        if(!auth()->user()->can('admin crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+        
         $status_code = 200;
 
         $check = User::find($id);

@@ -15,6 +15,12 @@ class StoreController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->can('store crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $stores = Store::all();
 
         return response()->json($stores, 200);
@@ -38,6 +44,12 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user()->can('store crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $validated = $request->validate([
             'store' => 'required',
             'whatsapp_number' => 'required|min:10',
@@ -62,6 +74,12 @@ class StoreController extends Controller
      */
     public function show($id)
     {
+        if(!auth()->user()->can('store crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $store = Store::find($id);
 
         return response()->json($store, 200);
@@ -87,6 +105,12 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!auth()->user()->can('store crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+
         $validated = $request->validate([
             'whatsapp_number' => 'min:10',
         ]);
@@ -110,6 +134,12 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
+        if(!auth()->user()->can('store crud')) {
+            return response([
+                'message' => 'This user have no permission to access this route'
+            ]);
+        }
+        
         $status_code = 200;
         $check = Store::find($id);
 
