@@ -39,7 +39,7 @@ class StoreController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required',
+            'store' => 'required',
             'whatsapp_number' => 'required|min:10',
             'region' => 'required'
         ]);
@@ -62,7 +62,9 @@ class StoreController extends Controller
      */
     public function show($id)
     {
-        //
+        $store = Store::find($id);
+
+        return response()->json($store, 200);
     }
 
     /**
@@ -85,6 +87,10 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'whatsapp_number' => 'min:10',
+        ]);
+
         $data = Store::find($id);
         $updated = $data->update($request->all());
 
@@ -93,7 +99,7 @@ class StoreController extends Controller
             'data' => $data
         ];
 
-        return response()->json($message);
+        return response()->json($message, 200);
     }
 
     /**
@@ -104,9 +110,11 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
+        $status_code = 200;
         $check = Store::find($id);
 
         if(!$check) {
+            $status_code = 404;
             $message = [
                 'message' => 'The ID is not registered in the system',
             ];
@@ -118,6 +126,6 @@ class StoreController extends Controller
             ];
         }
 
-        return response()->json($message);
+        return response()->json($message, $status_code);
     }
 }

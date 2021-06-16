@@ -60,7 +60,7 @@ class AdminController extends Controller
             ]
         ];
 
-        return response()->json($message);
+        return response()->json($message, 201);
     }
 
     /**
@@ -73,7 +73,7 @@ class AdminController extends Controller
     {
         $user = User::find($id);
 
-        return response()->json($user);
+        return response()->json($user, 200);
     }
 
     /**
@@ -101,7 +101,7 @@ class AdminController extends Controller
             'gender' => [Rule::in(['L', 'P'])],
             'phone' => 'min:10'
         ]);
-        
+
         $data = User::find($id);
         $data->update($request->except(['password']));
 
@@ -110,7 +110,7 @@ class AdminController extends Controller
             'data' => $data
         ];
 
-        return response()->json($message);
+        return response()->json($message, 200);
     }
 
     /**
@@ -121,9 +121,12 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
+        $status_code = 200;
+
         $check = User::find($id);
 
         if(!$check) {
+            $status_code = 404;
             $message = [
                 'message' => 'The ID is not registered in the system'
             ];
@@ -135,6 +138,6 @@ class AdminController extends Controller
             ];
         }
 
-        return response()->json($message);
+        return response()->json($message, $status_code);
     }
 }

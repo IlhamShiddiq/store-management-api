@@ -8,10 +8,12 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\StoreController;
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::resource('admin', AdminController::class);
-Route::resource('store', StoreController::class);
-Route::resource('category', CategoryController::class);
-Route::resource('product', ProductController::class);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
  
+Route::group(['middleware' => ['auth:sanctum']],function () {
+    Route::resource('category', CategoryController::class);
+    Route::resource('admin', AdminController::class);
+    Route::resource('store', StoreController::class);
+    Route::resource('product', ProductController::class);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});

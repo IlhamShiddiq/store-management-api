@@ -15,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::select('products.*', 'categories.category', 'stores.name')
+        $products = Product::select('products.*', 'categories.category', 'stores.store')
                             ->join('categories', 'categories.id', 'products.category_id')
                             ->join('stores', 'stores.id', 'products.store_id')
                             ->get();
@@ -43,7 +43,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'store_id' => 'required|integer',
-            'name' => 'required',
+            'product' => 'required',
             'category_id' => 'required|integer',
             'price' => 'required|integer',
             'stock' => 'required|integer',
@@ -68,7 +68,13 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::select('products.*', 'categories.category', 'stores.store')
+                        ->join('categories', 'categories.id', 'products.category_id')
+                        ->join('stores', 'stores.id', 'products.store_id')
+                        ->where('products.id', $id)
+                        ->get();
+
+        return response()->json($product, 200);
     }
 
     /**
@@ -91,6 +97,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'store_id' => 'integer',
+            'category_id' => 'integer',
+            'price' => 'integer',
+            'stock' => 'integer'
+        ]);
+
         $data = Product::find($id);
         $updated = $data->update($request->all());
 
@@ -99,7 +112,7 @@ class ProductController extends Controller
             'data' => $data
         ];
 
-        return response()->json($message);
+        return response()->json($message, 200);
     }
 
     /**
@@ -110,9 +123,12 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        $status_code = 200;
+
         $check = Product::find($id);
 
         if(!$check) {
+            $status_code = 404;
             $message = [
                 'message' => 'The ID is not registered in the system',
             ];
@@ -124,6 +140,6 @@ class ProductController extends Controller
             ];
         }
 
-        return response()->json($message);
+        return response()->json($message, $status_code);
     }
 }
