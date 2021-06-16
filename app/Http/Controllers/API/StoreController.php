@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
+use App\Models\StoreAdmin;
+use App\Helpers\APIHelpers;
 
 class StoreController extends Controller
 {
@@ -16,24 +18,15 @@ class StoreController extends Controller
     public function index()
     {
         if(!auth()->user()->can('store crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
         $stores = Store::all();
 
-        return response()->json($stores, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $stores);
+        return response()->json($response, 200);
     }
 
     /**
@@ -45,25 +38,16 @@ class StoreController extends Controller
     public function store(Request $request)
     {
         if(!auth()->user()->can('store crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
-
-        $validated = $request->validate([
-            'store' => 'required',
-            'whatsapp_number' => 'required|min:10',
-            'region' => 'required'
-        ]);
 
         $data = Store::create($request->all());
 
-        $message = [
-            'message' => 'Data has created successfully',
-            'data' => $data
-        ];
-
-        return response()->json($message, 201);
+        $message = 'Data has created successfully';
+        $response = APIHelpers::createApiResponse(false, 201, $message, $data);
+        return response()->json($response, 201);
     }
 
     /**
@@ -75,25 +59,15 @@ class StoreController extends Controller
     public function show($id)
     {
         if(!auth()->user()->can('store crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
         $store = Store::find($id);
 
-        return response()->json($store, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $store);
+        return response()->json($response, 200);
     }
 
     /**
@@ -106,24 +80,17 @@ class StoreController extends Controller
     public function update(Request $request, $id)
     {
         if(!auth()->user()->can('store crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
-        $validated = $request->validate([
-            'whatsapp_number' => 'min:10',
-        ]);
-
         $data = Store::find($id);
-        $updated = $data->update($request->all());
+        $data->update($request->all());
 
-        $message = [
-            'message' => 'Data has updated successfully',
-            'data' => $data
-        ];
-
-        return response()->json($message, 200);
+        $message = 'Data has updated successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, $data);
+        return response()->json($response, 200);
     }
 
     /**
@@ -135,27 +102,15 @@ class StoreController extends Controller
     public function destroy($id)
     {
         if(!auth()->user()->can('store crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
-        }
-        
-        $status_code = 200;
-        $check = Store::find($id);
-
-        if(!$check) {
-            $status_code = 404;
-            $message = [
-                'message' => 'The ID is not registered in the system',
-            ];
-        } else {
-            $data = Store::destroy($id);
-    
-            $message = [
-                'message' => 'Data has deleted successfully',
-            ];
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);;
         }
 
-        return response()->json($message, $status_code);
+        Store::destroy($id);
+
+        $message = 'Data has deleted successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, null);
+        return response()->json($response, 200);
     }
 }

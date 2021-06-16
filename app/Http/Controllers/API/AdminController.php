@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use App\Helpers\APIHelpers;
 
 class AdminController extends Controller
 {
@@ -17,24 +18,15 @@ class AdminController extends Controller
     public function index()
     {
         if(!auth()->user()->can('admin crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
         $users = User::all();
 
-        return response()->json($users, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $users);
+        return response()->json($response, 200);
     }
 
     /**
@@ -46,35 +38,27 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         if(!auth()->user()->can('admin crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed',
-            'gender' => ['required', Rule::in(['L', 'P'])],
-            'address' => 'required',
-            'phone' => 'required|min:10'
-        ]);
+        $data = $request->all();
 
-        $validated['password'] = bcrypt($validated['password']);
-        $user = User::create($validated);
+        if(!($data['password'] == $data['password_confirmation'])) {
+            $message = "The password doesn't match";
+            $response = APIHelpers::createApiResponse(true, 400, $message, null);
+            return response()->json($response, 400);
+        }
 
+        $data['password'] = bcrypt($data['password']);
+
+        $user = User::create($data);
         $user->assignRole('admin');
 
-        $message = [
-            'message' => 'Data has created successfully',
-            'data' => [
-                'id' => $user->id,
-                'name' => $request->name,
-                'email' => $request->email
-            ]
-        ];
-
-        return response()->json($message, 201);
+        $message = 'Data has created successfully';
+        $response = APIHelpers::createApiResponse(false, 201, $message, $user);
+        return response()->json($response, 201);
     }
 
     /**
@@ -86,25 +70,15 @@ class AdminController extends Controller
     public function show($id)
     {
         if(!auth()->user()->can('admin crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
         $user = User::find($id);
 
-        return response()->json($user, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $user);
+        return response()->json($response, 200);
     }
 
     /**
@@ -117,26 +91,17 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
         if(!auth()->user()->can('admin crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
-
-        $validated = $request->validate([
-            'email' => 'email|unique:users',
-            'gender' => [Rule::in(['L', 'P'])],
-            'phone' => 'min:10'
-        ]);
 
         $data = User::find($id);
         $data->update($request->except(['password']));
 
-        $message = [
-            'message' => 'Data has updated successfully',
-            'data' => $data
-        ];
-
-        return response()->json($message, 200);
+        $message = 'Data has updated successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, $data);
+        return response()->json($response, 200);
     }
 
     /**
@@ -148,28 +113,15 @@ class AdminController extends Controller
     public function destroy($id)
     {
         if(!auth()->user()->can('admin crud')) {
-            return response([
-                'message' => 'This user have no permission to access this route'
-            ]);
-        }
-        
-        $status_code = 200;
-
-        $check = User::find($id);
-
-        if(!$check) {
-            $status_code = 404;
-            $message = [
-                'message' => 'The ID is not registered in the system'
-            ];
-        } else {
-            User::destroy($id);
-
-            $message = [
-                'message' => 'Data has deleted successfully'
-            ];
+            $message = "This user have no permission to access this route";
+            $response = APIHelpers::createApiResponse(true, 401, $message, null);
+            return response()->json($response, 401);
         }
 
-        return response()->json($message, $status_code);
+        User::destroy($id);
+
+        $message = 'Data has deleted successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, null);
+        return response()->json($response, 200);
     }
 }

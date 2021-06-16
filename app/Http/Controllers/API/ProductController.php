@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Helpers\APIHelpers;
 
 class ProductController extends Controller
 {
@@ -20,17 +21,8 @@ class ProductController extends Controller
                             ->join('stores', 'stores.id', 'products.store_id')
                             ->get();
 
-        return response()->json($products, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $products);
+        return response()->json($response, 200);
     }
 
     /**
@@ -41,23 +33,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'store_id' => 'required|integer',
-            'product' => 'required',
-            'category_id' => 'required|integer',
-            'price' => 'required|integer',
-            'stock' => 'required|integer',
-            'description' => 'required'
-        ]);
-
         $data = Product::create($request->all());
 
-        $message = [
-            'message' => 'Data has created successfully',
-            'data' => $data
-        ];
-
-        return response()->json($message, 201);
+        $message = 'Data has created successfully';
+        $response = APIHelpers::createApiResponse(false, 201, $message, $data);
+        return response()->json($response, 201);
     }
 
     /**
@@ -74,18 +54,8 @@ class ProductController extends Controller
                         ->where('products.id', $id)
                         ->get();
 
-        return response()->json($product, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $response = APIHelpers::createApiResponse(false, 200, null, $product);
+        return response()->json($response, 200);
     }
 
     /**
@@ -97,22 +67,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'store_id' => 'integer',
-            'category_id' => 'integer',
-            'price' => 'integer',
-            'stock' => 'integer'
-        ]);
-
         $data = Product::find($id);
-        $updated = $data->update($request->all());
+        $data->update($request->all());
 
-        $message = [
-            'message' => 'Data has updated successfully',
-            'data' => $data
-        ];
-
-        return response()->json($message, 200);
+        $message = 'Data has updated successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, $data);
+        return response()->json($response, 200);
     }
 
     /**
@@ -123,23 +83,10 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $status_code = 200;
-
-        $check = Product::find($id);
-
-        if(!$check) {
-            $status_code = 404;
-            $message = [
-                'message' => 'The ID is not registered in the system',
-            ];
-        } else {
-            $data = Product::destroy($id);
-    
-            $message = [
-                'message' => 'Data has deleted successfully',
-            ];
-        }
-
-        return response()->json($message, $status_code);
+        Product::destroy($id);
+        
+        $message = 'Data has deleted successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, null);
+        return response()->json($response, 200);
     }
 }

@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['L', 'P']);
             $table->text('address');
             $table->string('phone');
+            $table->integer('store_id')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

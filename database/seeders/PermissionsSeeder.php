@@ -16,7 +16,6 @@ class PermissionsSeeder extends Seeder
     {
         Permission::create(['name' => 'store crud']);
         Permission::create(['name' => 'admin crud']);
-        Permission::create(['name' => 'assign admin']);
         Permission::create(['name' => 'product crud']);
         Permission::create(['name' => 'category crud']);
     }
