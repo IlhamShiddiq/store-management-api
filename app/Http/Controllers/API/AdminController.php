@@ -4,9 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
+use Illuminate\Validation\Rule;
+use App\Models\User;
 
-class ProductController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::select('products.*', 'categories.category', 'stores.name')
-                            ->join('categories', 'categories.id', 'products.category_id')
-                            ->join('stores', 'stores.id', 'products.store_id')
-                            ->get();
+        $users = User::all();
 
-        return response()->json($products, 200);
+        return response()->json($users, 200);
     }
 
     /**
@@ -42,22 +40,27 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'store_id' => 'required|integer',
             'name' => 'required',
-            'category_id' => 'required|integer',
-            'price' => 'required|integer',
-            'stock' => 'required|integer',
-            'description' => 'required'
+            'email' => 'email|required|unique:users',
+            'password' => 'required|confirmed',
+            'gender' => ['required', Rule::in(['L', 'P'])],
+            'address' => 'required',
+            'phone' => 'required|min:10'
         ]);
 
-        $data = Product::create($request->all());
+        $validated['password'] = bcrypt($validated['password']);
+        $data = User::create($validated);
 
         $message = [
             'message' => 'Data has created successfully',
-            'data' => $data
+            'data' => [
+                'id' => $data->id,
+                'name' => $request->name,
+                'email' => $request->email
+            ]
         ];
 
-        return response()->json($message, 201);
+        return response()->json($message);
     }
 
     /**
@@ -68,7 +71,9 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+
+        return response()->json($user);
     }
 
     /**
@@ -91,8 +96,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = Product::find($id);
-        $updated = $data->update($request->all());
+        $validated = $request->validate([
+            'email' => 'email|unique:users',
+            'gender' => [Rule::in(['L', 'P'])],
+            'phone' => 'min:10'
+        ]);
+        
+        $data = User::find($id);
+        $data->update($request->except(['password']));
 
         $message = [
             'message' => 'Data has updated successfully',
@@ -110,17 +121,17 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $check = Product::find($id);
+        $check = User::find($id);
 
         if(!$check) {
             $message = [
-                'message' => 'The ID is not registered in the system',
+                'message' => 'The ID is not registered in the system'
             ];
         } else {
-            $data = Product::destroy($id);
-    
+            User::destroy($id);
+
             $message = [
-                'message' => 'Data has deleted successfully',
+                'message' => 'Data has deleted successfully'
             ];
         }
 
