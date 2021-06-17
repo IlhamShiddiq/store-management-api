@@ -17,12 +17,6 @@ class AdminController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('admin crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $users = User::all();
 
         $response = APIHelpers::createApiResponse(false, 200, null, $users);
@@ -37,12 +31,6 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        if(!auth()->user()->can('admin crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $data = $request->all();
 
         if(!($data['password'] == $data['password_confirmation'])) {
@@ -69,12 +57,6 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()->can('admin crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $user = User::find($id);
 
         $response = APIHelpers::createApiResponse(false, 200, null, $user);
@@ -90,12 +72,6 @@ class AdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!auth()->user()->can('admin crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $data = User::find($id);
         $data->update($request->except(['password']));
 
@@ -112,12 +88,6 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        if(!auth()->user()->can('admin crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         User::destroy($id);
 
         $message = 'Data has deleted successfully';

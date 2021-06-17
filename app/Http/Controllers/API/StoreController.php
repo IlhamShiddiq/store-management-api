@@ -17,12 +17,6 @@ class StoreController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('store crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $stores = Store::all();
 
         $response = APIHelpers::createApiResponse(false, 200, null, $stores);
@@ -37,12 +31,6 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        if(!auth()->user()->can('store crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $data = Store::create($request->all());
 
         $message = 'Data has created successfully';
@@ -58,12 +46,6 @@ class StoreController extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()->can('store crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $store = Store::find($id);
 
         $response = APIHelpers::createApiResponse(false, 200, null, $store);
@@ -79,12 +61,6 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!auth()->user()->can('store crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);
-        }
-
         $data = Store::find($id);
         $data->update($request->all());
 
@@ -101,12 +77,6 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
-        if(!auth()->user()->can('store crud')) {
-            $message = "This user have no permission to access this route";
-            $response = APIHelpers::createApiResponse(true, 401, $message, null);
-            return response()->json($response, 401);;
-        }
-
         Store::destroy($id);
 
         $message = 'Data has deleted successfully';
