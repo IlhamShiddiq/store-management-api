@@ -54,7 +54,7 @@ class ProductController extends Controller
                         ->where('products.id', $id)
                         ->get();
 
-        $response = APIHelpers::createApiResponse(false, 200, null, $product);
+        $response = APIHelpers::createApiResponse(false, 200, null, $product[0]);
         return response()->json($response, 200);
     }
 
@@ -87,6 +87,23 @@ class ProductController extends Controller
         
         $message = 'Data has deleted successfully';
         $response = APIHelpers::createApiResponse(false, 200, $message, null);
+        return response()->json($response, 200);
+    }
+    /**
+     * Update stock data
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStock(Request $requets, $id)
+    {
+        $data = Product::find($id);
+        $data->update([
+            'stock' => $requets->stock
+        ]);
+
+        $message = 'Stock updated successfully';
+        $response = APIHelpers::createApiResponse(false, 200, $message, $data);
         return response()->json($response, 200);
     }
 }

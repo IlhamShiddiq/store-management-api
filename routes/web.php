@@ -1,18 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DocsController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [DocsController::class, 'index']);
+Route::get('/docs', [DocsController::class, 'index']);
+Route::get('/docs/login-logout', [DocsController::class, 'login_logout']);
+Route::get('/docs/store-data', [DocsController::class, 'store']);
+Route::get('/docs/admin-data', [DocsController::class, 'admin']);
+Route::get('/docs/category-data', [DocsController::class, 'category']);
+Route::get('/docs/product-data', [DocsController::class, 'product']);
