@@ -21,7 +21,7 @@ To see the documentation and list of endpoint of API, you can click this link: [
 
 ## Account
 #### Superadmin
-* Username : halosuperadmin
+* Email : halosuperadmin@gmail.com
 * Password : halosuperadmin
 
 ## Built with
