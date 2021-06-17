@@ -15,6 +15,7 @@ class PermissionsSeeder extends Seeder
     public function run()
     {
         Permission::create(['name' => 'store crud']);
+        Permission::create(['name' => 'store detail']);
         Permission::create(['name' => 'admin crud']);
         Permission::create(['name' => 'product crud']);
         Permission::create(['name' => 'category crud']);

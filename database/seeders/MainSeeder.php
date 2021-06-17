@@ -23,7 +23,7 @@ class MainSeeder extends Seeder
         $superadmin = Role::findByName('superadmin');
         $admin = Role::findByName('admin');
 
-        $superadmin->syncPermissions(['store crud', 'admin crud', 'product crud', 'category crud']);
-        $admin->syncPermissions(['product crud', 'category crud']);
+        $superadmin->syncPermissions(['store crud', 'store detail', 'admin crud', 'product crud', 'category crud']);
+        $admin->syncPermissions(['product crud', 'category crud', 'store detail']);
     }
 }
