@@ -26,6 +26,3 @@ To see the documentation and list of endpoint of API, you can click this link: [
 
 ## Built with
 * [Laravel v 8](https://laravel.com/docs/8.x)
-
-### Note
-Please let me know, if you find bugs in my website.
