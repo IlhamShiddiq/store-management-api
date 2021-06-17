@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth:sanctum']],function () {
     Route::delete('/store/{store}', [StoreController::class, 'destroy'])->middleware(['permission:store crud']);
     Route::put('/store/{store}', [StoreController::class, 'update'])->middleware(['permission:store detail']);
     Route::resource('product', ProductController::class)->middleware(['permission:product crud']);
-    Route::put('/product/stock/{store}', [ProductController::class, 'updateStock'])->middleware(['permission:product crud']);
+    Route::get('/product/bystore/{store}', [ProductController::class, 'productByStore'])->middleware(['permission:product crud']);
+    Route::put('/product/stock/{product}', [ProductController::class, 'updateStock'])->middleware(['permission:product crud']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });

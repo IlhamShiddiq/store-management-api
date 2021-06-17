@@ -89,6 +89,7 @@ class ProductController extends Controller
         $response = APIHelpers::createApiResponse(false, 200, $message, null);
         return response()->json($response, 200);
     }
+
     /**
      * Update stock data
      *
@@ -104,6 +105,19 @@ class ProductController extends Controller
 
         $message = 'Stock updated successfully';
         $response = APIHelpers::createApiResponse(false, 200, $message, $data);
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Get product data by store Id
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function productByStore($id) {
+        $data = Product::where('store_id', $id)->get();
+
+        $response = APIHelpers::createApiResponse(false, 200, null, $data);
         return response()->json($response, 200);
     }
 }
