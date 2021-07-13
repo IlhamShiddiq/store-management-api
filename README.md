@@ -1,8 +1,8 @@
-# Store Managemeent API
+# Store Management API
 
 ## Installing Web Application
 ### 1. Sofware required
-Before installing OLibrary, make sure your device has installed this software.
+Before installing, make sure your device has installed this software.
 * Composer : you can download it [here](https://getcomposer.org/)
 
 ### 2. Installing
